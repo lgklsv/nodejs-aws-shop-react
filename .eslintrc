@@ -20,5 +20,8 @@
     "react": {
       "version": "detect"
     }
+  },
+  "rules": {
+    "prettier/prettier": "off"
   }
 }
