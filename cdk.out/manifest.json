@@ -1,0 +1,135 @@
+{
+  "version": "39.0.0",
+  "artifacts": {
+    "MyNodejsShopReact.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "MyNodejsShopReact.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "MyNodejsShopReact": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "MyNodejsShopReact.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4163216343d18b415d40c533b2069585c5a62a3d6501a188837635446f8ab8db.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "MyNodejsShopReact.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "MyNodejsShopReact.assets"
+      ],
+      "metadata": {
+        "/MyNodejsShopReact/NodejsShopReact/CloudfrontOAI/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodejsShopReactCloudfrontOAIE9653A9E"
+          }
+        ],
+        "/MyNodejsShopReact/NodejsShopReact/NodejsShopReactBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodejsShopReactNodejsShopReactBucket64BF9331"
+          }
+        ],
+        "/MyNodejsShopReact/NodejsShopReact/NodejsShopReactBucket/Policy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodejsShopReactNodejsShopReactBucketPolicyD6E1B5B0"
+          }
+        ],
+        "/MyNodejsShopReact/NodejsShopReact/NodejsShopReactDistribution/CFDistribution": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodejsShopReactNodejsShopReactDistributionCFDistribution532FEA7A"
+          }
+        ],
+        "/MyNodejsShopReact/NodejsShopReact/NodejsShopReactDeployment/AwsCliLayer/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodejsShopReactNodejsShopReactDeploymentAwsCliLayer0A829661"
+          }
+        ],
+        "/MyNodejsShopReact/NodejsShopReact/NodejsShopReactDeployment/CustomResource/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "NodejsShopReactNodejsShopReactDeploymentCustomResourceF4BEABCE"
+          }
+        ],
+        "/MyNodejsShopReact/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C": [
+          {
+            "type": "aws:cdk:is-custom-resource-handler-singleton",
+            "data": true
+          },
+          {
+            "type": "aws:cdk:is-custom-resource-handler-runtime-family",
+            "data": 2
+          }
+        ],
+        "/MyNodejsShopReact/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRole89A01265"
+          }
+        ],
+        "/MyNodejsShopReact/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/ServiceRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756CServiceRoleDefaultPolicy88902FDF"
+          }
+        ],
+        "/MyNodejsShopReact/Custom::CDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CustomCDKBucketDeployment8693BB64968944B69AAFB0CC9EB8756C81C01536"
+          }
+        ],
+        "/MyNodejsShopReact/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/MyNodejsShopReact/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/MyNodejsShopReact/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/MyNodejsShopReact/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "MyNodejsShopReact"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}
