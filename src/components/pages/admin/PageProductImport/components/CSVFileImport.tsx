@@ -1,7 +1,8 @@
 import React from "react";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import axios from "axios";
+
+import { usePreSignFileImportUrl } from "~/queries/import";
 
 type CSVFileImportProps = {
   url: string;
@@ -10,6 +11,8 @@ type CSVFileImportProps = {
 
 export default function CSVFileImport({ url, title }: CSVFileImportProps) {
   const [file, setFile] = React.useState<File>();
+
+  const { mutateAsync: preSignFileImportUrl } = usePreSignFileImportUrl();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -27,20 +30,20 @@ export default function CSVFileImport({ url, title }: CSVFileImportProps) {
     console.log("uploadFile to", url);
 
     try {
+      // const authorization_token = localStorage.getItem("authorization_token");
       if (!file) {
         throw new Error("No file selected");
       }
+
       // Get the presigned URL
-      const response = await axios({
-        method: "GET",
+      const preSignedUrl = await preSignFileImportUrl({
         url,
-        params: {
-          name: encodeURIComponent(file.name),
-        },
+        fileName: encodeURIComponent(file.name),
       });
+
       console.log("File to upload: ", file.name);
-      console.log("Uploading to: ", response.data);
-      const result = await fetch(response.data, {
+      console.log("Uploading to: ", preSignedUrl);
+      const result = await fetch(preSignedUrl, {
         method: "PUT",
         body: file,
       });

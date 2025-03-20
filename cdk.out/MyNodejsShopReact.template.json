@@ -187,7 +187,7 @@
      }
     ],
     "SourceObjectKeys": [
-     "cbbf3086ccc388e52d1d8724aa2a802d36386389614266abd351f5ed7e8fdf22.zip"
+     "f9ed32b2904278a324ed26c6232bc36e701ade669095c7bed19f346131cab078.zip"
     ],
     "DestinationBucketName": {
      "Ref": "NodejsShopReactNodejsShopReactBucket64BF9331"
