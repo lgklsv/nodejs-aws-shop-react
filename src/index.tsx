@@ -4,12 +4,7 @@ import App from "~/components/App/App";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter } from "react-router-dom";
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "react-query";
+import { MutationCache, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
 import { AxiosError } from "axios";
@@ -27,10 +22,12 @@ const queryClient = new QueryClient({
     onError: (error) => {
       if (error instanceof AxiosError) {
         if (error.response?.status === 401) {
-          toast.error("Unauthorized");
+          toast.error("401: Unauthorized");
         }
         if (error.response?.status === 403) {
-          toast.error("You do not have permission to access this resource.");
+          toast.error(
+            "403: You do not have permission to access this resource."
+          );
         }
       }
     },
