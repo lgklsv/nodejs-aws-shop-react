@@ -4,14 +4,34 @@ import App from "~/components/App/App";
 import CssBaseline from "@mui/material/CssBaseline";
 import { ThemeProvider } from "@mui/material/styles";
 import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
+import { MutationCache, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { theme } from "~/theme";
+import { AxiosError } from "axios";
+import { toast, Toaster } from "sonner";
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { refetchOnWindowFocus: false, retry: false, staleTime: Infinity },
+    queries: {
+      refetchOnWindowFocus: false,
+      retry: false,
+      staleTime: Infinity,
+    },
   },
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        if (error.response?.status === 401) {
+          toast.error("401: Unauthorized");
+        }
+        if (error.response?.status === 403) {
+          toast.error(
+            "403: You do not have permission to access this resource."
+          );
+        }
+      }
+    },
+  }),
 });
 
 if (import.meta.env.DEV) {
@@ -28,6 +48,7 @@ root.render(
       <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
+          <Toaster richColors position="top-center" />
           <App />
         </ThemeProvider>
         <ReactQueryDevtools initialIsOpen={false} />
