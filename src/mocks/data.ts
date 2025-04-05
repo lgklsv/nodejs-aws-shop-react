@@ -70,35 +70,51 @@ export const cart: CartItem[] = [
 export const orders: Order[] = [
   {
     id: "1",
-    address: {
+    delivery: {
       address: "some address",
       firstName: "Name",
       lastName: "Surname",
       comment: "",
     },
     items: [
-      { productId: "7567ec4b-b10c-48c5-9345-fc73c48a80aa", count: 2 },
-      { productId: "7567ec4b-b10c-45c5-9345-fc73c48a80a1", count: 5 },
+      { product_id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa", count: 2 },
+      { product_id: "7567ec4b-b10c-45c5-9345-fc73c48a80a1", count: 5 },
     ],
-    statusHistory: [
-      { status: OrderStatus.Open, timestamp: Date.now(), comment: "New order" },
-    ],
+    status: OrderStatus.Open,
+    payment: {
+      type: "credit_card",
+      amount: 100.5,
+      details: {
+        cvv: "***",
+        expiry: "12/24",
+        cardNumber: "************1234",
+      },
+      currency: "USD",
+    },
+    total: 1,
+    user_id: "aeed29c6-eb4b-408f-af50-7557904356e9",
   },
   {
     id: "2",
-    address: {
+    delivery: {
       address: "another address",
       firstName: "John",
       lastName: "Doe",
       comment: "Ship fast!",
     },
-    items: [{ productId: "7567ec4b-b10c-48c5-9345-fc73c48a80aa", count: 3 }],
-    statusHistory: [
-      {
-        status: OrderStatus.Sent,
-        timestamp: Date.now(),
-        comment: "Fancy order",
+    items: [{ product_id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa", count: 3 }],
+    status: OrderStatus.Sent,
+    payment: {
+      type: "credit_card",
+      amount: 100.5,
+      details: {
+        cvv: "***",
+        expiry: "12/24",
+        cardNumber: "************1234",
       },
-    ],
+      currency: "USD",
+    },
+    user_id: "aeed29c6-eb4b-408f-af50-7557904356e9",
+    total: 1,
   },
 ];

@@ -3,11 +3,16 @@ import React from "react";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import API_PATHS from "~/constants/apiPaths";
 import { OrderStatus } from "~/constants/order";
-import { Order } from "~/models/Order";
+import { Address, Order } from "~/models/Order";
 
 export function useOrders() {
   return useQuery<Order[], AxiosError>("orders", async () => {
-    const res = await axios.get<Order[]>(`${API_PATHS.order}/order`);
+    const res = await axios.get<Order[]>(`${API_PATHS.order}/order`, {
+      headers: {
+        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+      },
+    });
+
     return res.data;
   });
 }
@@ -34,12 +39,30 @@ export function useUpdateOrderStatus() {
 }
 
 export function useSubmitOrder() {
-  return useMutation((values: Omit<Order, "id">) => {
-    return axios.put<Omit<Order, "id">>(`${API_PATHS.order}/order`, values, {
-      headers: {
-        Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+  return useMutation((values: { address: Address; total: number }) => {
+    return axios.put<Omit<Order, "id">>(
+      `${API_PATHS.order}/order`,
+      {
+        address: values.address,
+        payment: {
+          type: "credit_card",
+          amount: values.total,
+          currency: "USD",
+          details: {
+            cardNumber: "************1234",
+            expiry: "12/24",
+            cvv: "***",
+          },
+        },
+        total: values.total,
+        comments: "",
       },
-    });
+      {
+        headers: {
+          Authorization: `Basic ${localStorage.getItem("authorization_token")}`,
+        },
+      }
+    );
   });
 }
 

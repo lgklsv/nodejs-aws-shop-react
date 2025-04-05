@@ -7,11 +7,12 @@ import Typography from "@mui/material/Typography";
 import ReviewCart from "~/components/pages/PageCart/components/ReviewCart";
 import ReviewOrder from "~/components/pages/PageCart/components/ReviewOrder";
 import PaperLayout from "~/components/PaperLayout/PaperLayout";
-import { Address, AddressSchema, Order } from "~/models/Order";
+import { Address, AddressSchema } from "~/models/Order";
 import Box from "@mui/material/Box";
 import { useCart, useInvalidateCart } from "~/queries/cart";
 import AddressForm from "~/components/pages/PageCart/components/AddressForm";
 import { useSubmitOrder } from "~/queries/orders";
+import { useAvailableProducts } from "~/queries/products";
 
 enum CartStep {
   ReviewCart,
@@ -43,13 +44,22 @@ const Success = () => (
 const steps = ["Review your cart", "Shipping address", "Review your order"];
 
 export default function PageCart() {
-  const { data = [] } = useCart();
+  const { data = [], isLoading } = useCart();
+  const { data: products = [] } = useAvailableProducts();
   const { mutate: submitOrder } = useSubmitOrder();
   const invalidateCart = useInvalidateCart();
   const [activeStep, setActiveStep] = React.useState<CartStep>(
     CartStep.ReviewCart
   );
   const [address, setAddress] = useState<Address>(initialAddressValues);
+
+  const total = data
+    .map((product) => {
+      const productPrice =
+        products?.find((prod) => prod.id === product.product_id)?.price || 0;
+      return productPrice * product.count;
+    })
+    .reduce((sum, acc) => sum + acc, 0);
 
   const isCartEmpty = data.length === 0;
 
@@ -58,20 +68,19 @@ export default function PageCart() {
       setActiveStep((step) => step + 1);
       return;
     }
-    const values = {
-      items: data.map((i) => ({
-        productId: i.product.id,
-        count: i.count,
-      })),
-      address,
-    };
 
-    submitOrder(values as Omit<Order, "id">, {
-      onSuccess: () => {
-        setActiveStep(activeStep + 1);
-        invalidateCart();
+    submitOrder(
+      {
+        address,
+        total,
       },
-    });
+      {
+        onSuccess: () => {
+          setActiveStep(activeStep + 1);
+          invalidateCart();
+        },
+      }
+    );
   };
 
   const handleBack = () => {
@@ -82,6 +91,8 @@ export default function PageCart() {
     setAddress(values);
     handleNext();
   };
+
+  if (isLoading) return <div>Loading...</div>;
 
   return (
     <PaperLayout>
