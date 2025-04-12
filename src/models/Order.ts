@@ -10,8 +10,17 @@ export const AddressSchema = Yup.object({
 
 export type Address = Yup.InferType<typeof AddressSchema>;
 
+export const PaymentSchema = Yup.object({
+  amount: Yup.number().required(),
+  currency: Yup.string().required().default("USD"),
+  type: Yup.string().required().default("credit_card"),
+  details: Yup.object().defined(),
+}).defined();
+
+export type Payment = Yup.InferType<typeof PaymentSchema>;
+
 export const OrderItemSchema = Yup.object({
-  productId: Yup.string().required(),
+  product_id: Yup.string().required(),
   count: Yup.number().integer().positive().required(),
 }).defined();
 
@@ -28,8 +37,11 @@ export type statusHistory = Yup.InferType<typeof statusHistorySchema>;
 export const OrderSchema = Yup.object({
   id: Yup.string().required(),
   items: Yup.array().of(OrderItemSchema).defined(),
-  address: AddressSchema.required(),
-  statusHistory: Yup.array().of(statusHistorySchema).defined(),
+  delivery: AddressSchema.required(),
+  status: Yup.mixed<OrderStatus>().oneOf(Object.values(OrderStatus)).required(),
+  total: Yup.number().required(),
+  user_id: Yup.string().required(),
+  payment: PaymentSchema.required(),
 }).defined();
 
 export type Order = Yup.InferType<typeof OrderSchema>;

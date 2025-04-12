@@ -5,8 +5,7 @@ import { useParams } from "react-router-dom";
 import PaperLayout from "~/components/PaperLayout/PaperLayout";
 import Typography from "@mui/material/Typography";
 import API_PATHS from "~/constants/apiPaths";
-import { CartItem } from "~/models/CartItem";
-import { AvailableProduct } from "~/models/Product";
+import { AvailableProduct, Product } from "~/models/Product";
 import ReviewOrder from "~/components/pages/PageCart/components/ReviewOrder";
 import { OrderStatus, ORDER_STATUS_FLOW } from "~/constants/order";
 import Button from "@mui/material/Button";
@@ -14,12 +13,6 @@ import MenuItem from "@mui/material/MenuItem";
 import { Field, Form, Formik, FormikProps } from "formik";
 import Grid from "@mui/material/Grid";
 import TextField from "~/components/Form/TextField";
-import Table from "@mui/material/Table";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import TableCell from "@mui/material/TableCell";
-import TableBody from "@mui/material/TableBody";
-import TableContainer from "@mui/material/TableContainer";
 import Box from "@mui/material/Box";
 import { useQueries } from "react-query";
 import { useInvalidateOrder, useUpdateOrderStatus } from "~/queries/orders";
@@ -55,39 +48,44 @@ export default function PageOrder() {
   ] = results;
   const { mutateAsync: updateOrderStatus } = useUpdateOrderStatus();
   const invalidateOrder = useInvalidateOrder();
-  const cartItems: CartItem[] = React.useMemo(() => {
+  const cartItems = React.useMemo(() => {
     if (order && products) {
       return order.items.map((item: OrderItem) => {
-        const product = products.find((p) => p.id === item.productId);
-        if (!product) {
+        const product = products.find((p) => p.id === item.product_id);
+        if (!product || !product.id) {
           throw new Error("Product not found");
         }
         return { product, count: item.count };
       });
     }
     return [];
-  }, [order, products]);
+  }, [order, products]) as {
+    product: Omit<Product, "id"> & { id: string };
+    count: number;
+  }[];
 
   if (isOrderLoading || isProductsLoading) return <p>loading...</p>;
-
-  const statusHistory = order?.statusHistory || [];
-
-  const lastStatusItem = statusHistory[statusHistory.length - 1];
 
   return order ? (
     <PaperLayout>
       <Typography component="h1" variant="h4" align="center">
         Manage order
       </Typography>
-      <ReviewOrder address={order.address} items={cartItems} />
+      <ReviewOrder
+        address={order.delivery}
+        items={cartItems.map((item) => ({
+          product_id: item.product.id,
+          count: item.count,
+        }))}
+      />
       <Typography variant="h6">Status:</Typography>
       <Typography variant="h6" color="primary">
-        {lastStatusItem?.status.toUpperCase()}
+        {order.status.toUpperCase()}
       </Typography>
       <Typography variant="h6">Change status:</Typography>
       <Box py={2}>
         <Formik
-          initialValues={{ status: lastStatusItem.status, comment: "" }}
+          initialValues={{ status: order.status, comment: "" }}
           enableReinitialize
           onSubmit={(values) =>
             updateOrderStatus(
@@ -144,31 +142,6 @@ export default function PageOrder() {
           )}
         </Formik>
       </Box>
-      <Typography variant="h6">Status history:</Typography>
-      <TableContainer>
-        <Table aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Status</TableCell>
-              <TableCell align="right">Date and Time</TableCell>
-              <TableCell align="right">Comment</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {statusHistory.map((statusHistoryItem) => (
-              <TableRow key={order.id}>
-                <TableCell component="th" scope="row">
-                  {statusHistoryItem.status.toUpperCase()}
-                </TableCell>
-                <TableCell align="right">
-                  {new Date(statusHistoryItem.timestamp).toString()}
-                </TableCell>
-                <TableCell align="right">{statusHistoryItem.comment}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
     </PaperLayout>
   ) : null;
 }
